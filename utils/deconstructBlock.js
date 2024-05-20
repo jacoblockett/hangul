@@ -5,7 +5,7 @@
  * @param {string} syllable The hangul block to desconstruct
  * @returns {[initialLetter: string, medialLetter: string, finalLetter: string]}
  */
-function deconstructBlock(syllable) {
+export default function deconstructBlock(syllable) {
 	if (typeof syllable !== "string") throw new TypeError(`Expected syllable to be a string`)
 
 	syllable = syllable.normalize()
@@ -31,5 +31,3 @@ function deconstructBlock(syllable) {
 
 	return result
 }
-
-export default deconstructBlock
