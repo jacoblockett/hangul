@@ -1,4 +1,4 @@
-const doubleConsonants = {
+export default {
 	ㄲ: true,
 	ㄸ: true,
 	ㅃ: true,
@@ -12,5 +12,3 @@ const doubleConsonants = {
 	ᆩ: true,
 	ᆻ: true,
 }
-
-export default doubleConsonants

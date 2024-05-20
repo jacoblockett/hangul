@@ -1,4 +1,4 @@
-const vowels = {
+export default {
 	ㅏ: true,
 	ㅐ: true,
 	ㅑ: true,
@@ -42,5 +42,3 @@ const vowels = {
 	ᅴ: true,
 	ᅵ: true,
 }
-
-export default vowels

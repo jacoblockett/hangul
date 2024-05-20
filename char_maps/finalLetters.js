@@ -1,4 +1,4 @@
-const finalLetters = {
+export default {
 	ᆨ: true,
 	ᆩ: true,
 	ᆪ: true,
@@ -27,5 +27,3 @@ const finalLetters = {
 	ᇁ: true,
 	ᇂ: true,
 }
-
-export default finalLetters

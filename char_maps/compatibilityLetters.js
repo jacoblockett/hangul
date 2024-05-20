@@ -1,4 +1,4 @@
-const compatibilityLetters = {
+export default {
 	ㄱ: true,
 	ㄲ: true,
 	ㄳ: true,
@@ -52,5 +52,3 @@ const compatibilityLetters = {
 	ㅣ: true,
 	"\u3164": true,
 }
-
-export default compatibilityLetters

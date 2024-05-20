@@ -1,4 +1,4 @@
-const initialLetters = {
+export default {
 	ᄀ: true,
 	ᄁ: true,
 	ᄂ: true,
@@ -19,5 +19,3 @@ const initialLetters = {
 	ᄑ: true,
 	ᄒ: true,
 }
-
-export default initialLetters

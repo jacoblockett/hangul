@@ -1,4 +1,4 @@
-const consonants = {
+export default {
 	ㄱ: true,
 	ㄲ: true,
 	ㄳ: true,
@@ -76,5 +76,3 @@ const consonants = {
 	ᇁ: true,
 	ᇂ: true,
 }
-
-export default consonants

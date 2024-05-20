@@ -1,4 +1,4 @@
-const compositeLetters = {
+export default {
 	ㄲ: "ㄱㄱ",
 	ㄳ: "ㄱㅅ",
 	ㄵ: "ㄴㅈ",
@@ -48,5 +48,3 @@ const compositeLetters = {
 	ᆹ: "ᆸᆺ",
 	ᆻ: "ᆺᆺ",
 }
-
-export default compositeLetters

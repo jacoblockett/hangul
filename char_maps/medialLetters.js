@@ -1,4 +1,4 @@
-const medialLetters = {
+export default {
 	ᅡ: true,
 	ᅢ: true,
 	ᅣ: true,
@@ -21,5 +21,3 @@ const medialLetters = {
 	ᅴ: true,
 	ᅵ: true,
 }
-
-export default medialLetters

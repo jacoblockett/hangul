@@ -1,4 +1,4 @@
-const toCompatibilityLetter = {
+export default {
 	ᄀ: "ㄱ",
 	ᄁ: "ㄲ",
 	ᄂ: "ㄴ",
@@ -67,5 +67,3 @@ const toCompatibilityLetter = {
 	ᇁ: "ㅍ",
 	ᇂ: "ㅎ",
 }
-
-export default toCompatibilityLetter

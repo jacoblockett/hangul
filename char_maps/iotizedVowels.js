@@ -1,4 +1,4 @@
-const iotizedVowels = {
+export default {
 	ㅑ: true,
 	ㅒ: true,
 	ㅕ: true,
@@ -12,5 +12,3 @@ const iotizedVowels = {
 	ᅭ: true,
 	ᅲ: true,
 }
-
-export default iotizedVowels
