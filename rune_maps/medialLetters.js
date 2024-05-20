@@ -1,0 +1,25 @@
+const medialLetters = {
+	ᅡ: true,
+	ᅢ: true,
+	ᅣ: true,
+	ᅤ: true,
+	ᅥ: true,
+	ᅦ: true,
+	ᅧ: true,
+	ᅨ: true,
+	ᅩ: true,
+	ᅪ: true,
+	ᅫ: true,
+	ᅬ: true,
+	ᅭ: true,
+	ᅮ: true,
+	ᅯ: true,
+	ᅰ: true,
+	ᅱ: true,
+	ᅲ: true,
+	ᅳ: true,
+	ᅴ: true,
+	ᅵ: true,
+}
+
+export default medialLetters
