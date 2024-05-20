@@ -287,8 +287,8 @@ export function deconstruct(value, options = {}) {
 /**
  * Constructs the given string into valid hangul syllables. When deconstruct is true, `construct`
  * will build the new string by mimicing typing using the dubeolsik (두벌식) layout.
- * When it's false, `construct` will consider each character as pre-built and not attempt to rebuild
- * by letter. See example so that this concept is more clear.
+ * When it's false, `construct` will not deconstruct already-formed syllables and will push them
+ * as is, only considering loose letters.
  *
  * @note `construct` will always convert any non-compatibility letters into compatibility letters
  *
@@ -336,14 +336,29 @@ export function construct(value, options = {}) {
 			pushSyllable()
 			result.push(char)
 		} else if (syllable.length === 3) {
-			// If the syllable already has 3 characters, check if the current char
-			// and the final char of the syllable can be made into a composite letter
+			// If the syllable has three letters,
+			// 1. check if a composite final letter can be made
+			// 2. check if cur is a vowel and final syllable letter is valid initial letter
+			// 3. check if cur is a vowel and final syllable composite letter's second letter is
+			//    valid initial letter
+			// 4. push the syllable and reset
 			const compatChar = toCompatibilityLetter[char] || char
 			const composite = toCompositeLetters[`${syllable[2]}${compatChar}`]
 
 			if (composite) {
 				syllable[2] = composite
+			} else if (vowels[compatChar] && toInitialLetter[syllable[2]]) {
+				const initial = syllable.pop()
+
 				pushSyllable()
+				syllable.push(initial, compatChar)
+			} else if (vowels[compatChar] && toInitialLetter[compositeLetters[syllable[2]]?.[1]]) {
+				const [final, initial] = compositeLetters[syllable.pop()]
+
+				syllable.push(final)
+				pushSyllable()
+
+				syllable.push(initial, compatChar)
 			} else {
 				pushSyllable()
 				syllable.push(compatChar)
