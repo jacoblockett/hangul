@@ -250,28 +250,29 @@ export function deconstruct(value, options = {}) {
 	for (const char of value) {
 		let deconstructed
 
-		try {
+		const charCode = char.codePointAt(0)
+
+		if (0xac00 <= charCode && charCode <= 0xd7a3) {
 			deconstructed = deconstructBlock(char)
-		} catch (error) {
-			if (error.code === "INVALID_HANGUL_SYLLABLE") {
-				deconstructed = [char]
-			} else {
-				throw error
-			}
+		} else {
+			deconstructed = [char]
 		}
 
 		if (options.decouple) {
-			deconstructed = deconstructed.reduce((pre, cur) => {
-				const constituents = compositeLetters[cur]
-
-				if (constituents) return [...pre, ...constituents]
-
-				return [...pre, cur]
-			}, [])
-		}
+			let nDeconstructed = []
+			for (let i = 0; i < deconstructed.length; i++) {
+				nDeconstructed = [
+					...nDeconstructed,
+					...(compositeLetters[deconstructed[i]] || deconstructed[i]),
+				]
+			}
+			deconstructed = nDeconstructed
+		} // TODO: optimize this somehow
 
 		if (options.compatibility) {
-			deconstructed = deconstructed.map(char => toCompatibilityLetter[char] || char)
+			for (let i = 0; i < deconstructed.length; i++) {
+				deconstructed[i] = toCompatibilityLetter[deconstructed[i]] || deconstructed[i]
+			}
 		}
 
 		if (options.group) {

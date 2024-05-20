@@ -3,19 +3,17 @@
  * letters.
  *
  * @param {string} syllable The hangul block to desconstruct
- * @returns {[initialLetter: string, medialLetter: string, finalLetter: string]}
+ * @returns {[initialLetter: string, medialLetter: string, finalLetter: string|undefined]}
  */
 export default function deconstructBlock(syllable) {
 	if (typeof syllable !== "string") throw new TypeError(`Expected syllable to be a string`)
 
-	syllable = syllable.normalize()
-
-	const invalidError = new Error(`Expected syllable to be a valid hangul block`)
-	invalidError.code = "INVALID_HANGUL_SYLLABLE"
+	// syllable = syllable.normalize()
 
 	const codepoint = syllable.codePointAt(0)
 
-	if (syllable.length > 1 || codepoint < 0xac00 || codepoint > 0xd7a3) throw invalidError
+	if (syllable.length > 1 || codepoint < 0xac00 || codepoint > 0xd7a3)
+		throw new Error(`Expected syllable to be a valid hangul block`)
 
 	const baseIndex = codepoint - 0xac00
 	const initialIndex = ~~(baseIndex / 588)
