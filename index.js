@@ -9,6 +9,11 @@ import doubleConsonants from "./char_maps/doubleConsonants.js"
 import iotizedVowels from "./char_maps/iotizedVowels.js"
 import toCompatibilityLetter from "./char_maps/toCompatibilityLetter.js"
 import deconstructBlock from "./utils/deconstructBlock.js"
+import constructBlock from "./utils/constructBlock.js"
+import toCompositeLetters from "./char_maps/toCompositeLetters.js"
+import toFinalLetter from "./char_maps/toFinalLetter.js"
+import toInitialLetter from "./char_maps/toInitialLetter.js"
+import toMedialLetter from "./char_maps/toMedialLetter.js"
 
 const blockRangeStart = 0xac00 // 가
 const blockRangeEnd = 0xd7a3 // 힣
@@ -182,6 +187,10 @@ export function isMedial(value) {
 /**
  * Checks if the given value is a hangul syllable.
  *
+ * @example
+ * isSyllable("한") // => true
+ * isSyllable("ㅎ") // => false
+ *
  * @param {value} value The value to check
  * @returns {boolean}
  */
@@ -223,9 +232,9 @@ export function isVowel(value) {
  *
  * @param {string} value The value to deconstruct
  * @param {object} [options]
- * @param {boolean} options.group Groups each found syllable in its own array
- * @param {boolean} options.decouple Decomposes composite letters (i.e. ㄲ, ㄵ, etc.) into individual letters
- * @param {boolean} options.compatibility Converts the deconstructed letters into their compatibility form
+ * @param {boolean} options.group Groups each found syllable in its own array (default = `false`)
+ * @param {boolean} options.decouple Decomposes composite letters (i.e. ㄲ, ㄵ, etc.) into individual letters (default = `false`)
+ * @param {boolean} options.compatibility Converts the deconstructed letters into their compatibility form (default = `true`)
  * @returns {string[]|string[][]}
  */
 export function deconstruct(value, options = {}) {
@@ -275,6 +284,125 @@ export function deconstruct(value, options = {}) {
 	return result
 }
 
+/**
+ * Constructs the given string into valid hangul syllables. When deconstruct is true, `construct`
+ * will build the new string by mimicing typing using the dubeolsik (두벌식) layout.
+ * When it's false, `construct` will consider each character as pre-built and not attempt to rebuild
+ * by letter. See example so that this concept is more clear.
+ *
+ * @note `construct` will always convert any non-compatibility letters into compatibility letters
+ *
+ * @example
+ * construct("ㅎㅏㄴ") // => 한
+ * construct("ㄱ가") // => 까
+ * construct("ㄱ가", { deconstruct: false }) // => ㄱ가
+ *
+ * @param {string} value The value to construct
+ * @param {object} options
+ * @param {boolean} deconstruct Deconstructs the string before parsing (default = true)
+ * @returns {string}
+ */
 export function construct(value, options = {}) {
-	//
+	if (typeof value !== "string") throw new TypeError(`Expected value to be a string`)
+	if (!options || options.constructor !== Object) options = {}
+
+	options.deconstruct = typeof options.deconstruct === "boolean" ? options.deconstruct : true
+
+	const characters = options.deconstruct ? deconstruct(value) : [...value.normalize()]
+	const syllable = []
+	const result = []
+
+	function pushSyllable() {
+		if (syllable.length > 1) {
+			result.push(constructBlock(...syllable))
+			syllable.length = 0
+		} else if (syllable.length === 1) {
+			result.push(...syllable)
+			syllable.length = 0
+		}
+	}
+
+	while (characters.length) {
+		const char = characters.shift()
+
+		if (!isHangul(char, { strict: true })) {
+			// If the current char isn't hangul, process the syllable, push the char
+			// and reset
+			pushSyllable()
+			result.push(char)
+		} else if (!options.deconstruct && isSyllable(char)) {
+			// If the current char is a syllable block (in non-deconstructive mode),
+			// process the syllable, push the char, and reset
+			pushSyllable()
+			result.push(char)
+		} else if (syllable.length === 3) {
+			// If the syllable already has 3 characters, check if the current char
+			// and the final char of the syllable can be made into a composite letter
+			const compatChar = toCompatibilityLetter[char] || char
+			const composite = toCompositeLetters[`${syllable[2]}${compatChar}`]
+
+			if (composite) {
+				syllable[2] = composite
+				pushSyllable()
+			} else {
+				pushSyllable()
+				syllable.push(compatChar)
+			}
+		} else if (syllable.length === 2) {
+			// If the syllable has two letters,
+			// 1. check if a composite vowel can be made
+			// 2. check if a valid final letter can be pushed.
+			// 3. check if the current char is a valid initial letter
+			const compatChar = toCompatibilityLetter[char] || char
+			const composite = toCompositeLetters[`${syllable[1]}${compatChar}`]
+
+			if (composite) {
+				syllable[1] = composite
+			} else if (toFinalLetter[compatChar]) {
+				syllable.push(compatChar)
+			} else {
+				pushSyllable()
+
+				if (toInitialLetter[compatChar]) {
+					syllable.push(compatChar)
+				} else {
+					result.push(char) // should this push compatChar? needs testing.
+				}
+			}
+		} else if (syllable.length === 1) {
+			// If the syllable has one letter,
+			// 1. check if a composite initial letter can be made
+			// 2. check if a valid medial letter can be pushed
+			// 3. check if the current char is a valid inital letter
+			const compatChar = toCompatibilityLetter[char] || char
+			const composite = toCompositeLetters[`${syllable[0]}${compatChar}`]
+
+			if (composite) {
+				syllable[0] = composite
+			} else if (toMedialLetter[compatChar]) {
+				syllable.push(compatChar)
+			} else {
+				pushSyllable()
+
+				if (toInitialLetter[compatChar]) {
+					syllable.push(compatChar)
+				} else {
+					result.push(char) // should this push compatChar? needs testing.
+				}
+			}
+		} else {
+			// If no letters yet, check if the current char is a valid initial letter
+			const compatChar = toCompatibilityLetter[char] || char
+
+			if (toInitialLetter[compatChar]) {
+				syllable.push(compatChar)
+			} else {
+				result.push(char) // should this push compatChar? needs testing.
+			}
+		}
+	}
+
+	pushSyllable()
+
+	return result.join("")
 }
