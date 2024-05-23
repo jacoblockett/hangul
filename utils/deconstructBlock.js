@@ -8,7 +8,9 @@
 export default function deconstructBlock(syllable) {
 	if (typeof syllable !== "string") throw new TypeError(`Expected syllable to be a string`)
 
-	// syllable = syllable.normalize()
+	// syllable = syllable.normalize() // since this is a utility function, all input
+	// is already expected to be normalized given the nature of the functions using this
+	// utility function.
 
 	const codepoint = syllable.codePointAt(0)
 
@@ -25,7 +27,7 @@ export default function deconstructBlock(syllable) {
 
 	const result = [initial, medial]
 
-	if (final) result.push(final)
+	if (final) result[2] = final
 
 	return result
 }

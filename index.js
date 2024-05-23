@@ -14,6 +14,8 @@ import toCompositeLetters from "./char_maps/toCompositeLetters.js"
 import toFinalLetter from "./char_maps/toFinalLetter.js"
 import toInitialLetter from "./char_maps/toInitialLetter.js"
 import toMedialLetter from "./char_maps/toMedialLetter.js"
+import codepointToLetter from "./char_maps/codepointToLetter.js"
+import nonCompatibilityLetters from "./char_maps/nonCompatibilityLetters.js"
 
 const blockRangeStart = 0xac00 // 가
 const blockRangeEnd = 0xd7a3 // 힣
@@ -185,6 +187,20 @@ export function isMedial(value) {
 }
 
 /**
+ * Checks if the given value is a non-compatibility letter.
+ *
+ * @example
+ * isNonCompatibility("ᅡ") // true
+ * isNonCompatibility("ㅏ") // false
+ *
+ * @param {unknown} value The value to check
+ * @returns {boolean}
+ */
+export function isNonCompatibility(value) {
+	return !!nonCompatibilityLetters[value]
+}
+
+/**
  * Checks if the given value is a hangul syllable.
  *
  * @example
@@ -245,40 +261,59 @@ export function deconstruct(value, options = {}) {
 	options.decouple = typeof options.decouple === "boolean" ? options.decouple : false
 	options.compatibility = typeof options.compatibility === "boolean" ? options.compatibility : true
 
-	const result = []
+	let result = []
+	let deconstructed
 
-	for (const char of value) {
-		let deconstructed
-
+	for (let i = 0; i < value.length; i++) {
+		const char = value[i]
 		const charCode = char.codePointAt(0)
 
 		if (0xac00 <= charCode && charCode <= 0xd7a3) {
-			deconstructed = deconstructBlock(char)
+			const baseIndex = charCode - 0xac00
+			const initial = codepointToLetter[~~(baseIndex / 588) + 0x1100]
+			const medial = codepointToLetter[~~((baseIndex % 588) / 28) + 0x1161]
+			const final = baseIndex % 28 ? codepointToLetter[(baseIndex % 28) + 0x11a8 - 1] : 0
+
+			if (options.compatibility) {
+				deconstructed = [toCompatibilityLetter[initial], toCompatibilityLetter[medial]]
+
+				if (final) deconstructed.push(toCompatibilityLetter[final])
+			} else {
+				deconstructed = [initial, medial]
+
+				if (final) deconstructed.push(final)
+			}
 		} else {
-			deconstructed = [char]
+			if (options.compatibility) {
+				deconstructed = [toCompatibilityLetter[char] || char]
+			} else {
+				deconstructed = [char]
+			}
 		}
 
 		if (options.decouple) {
-			let nDeconstructed = []
-			for (let i = 0; i < deconstructed.length; i++) {
-				nDeconstructed = [
-					...nDeconstructed,
-					...(compositeLetters[deconstructed[i]] || deconstructed[i]),
-				]
-			}
-			deconstructed = nDeconstructed
-		} // TODO: optimize this somehow
+			const newDeconstructed = []
 
-		if (options.compatibility) {
-			for (let i = 0; i < deconstructed.length; i++) {
-				deconstructed[i] = toCompatibilityLetter[deconstructed[i]] || deconstructed[i]
+			for (let j = 0; j < deconstructed.length; j++) {
+				const letter = deconstructed[j]
+				const letters = compositeLetters[letter]
+
+				if (letters) {
+					for (let k = 0; k < letters.length; k++) {
+						newDeconstructed.push(letters[k])
+					}
+				} else {
+					newDeconstructed.push(letter)
+				}
 			}
+
+			deconstructed = newDeconstructed
 		}
 
 		if (options.group) {
 			result.push(deconstructed)
 		} else {
-			result.push(...deconstructed)
+			result = result.concat(deconstructed)
 		}
 	}
 
