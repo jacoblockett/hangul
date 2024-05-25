@@ -2,7 +2,7 @@ import compatibilityLetters from "./char_maps/compatibilityLetters.js"
 // import initialLetters from "./char_maps/initialLetters.js"
 // import medialLetters from "./char_maps/medialLetters.js"
 // import finalLetters from "./char_maps/finalLetters.js"
-import compositeLetters from "./char_maps/compositeLetters.js"
+// import compositeLetters from "./char_maps/compositeLetters.js"
 import consonants from "./char_maps/consonants.js"
 import vowels from "./char_maps/vowels.js"
 import doubleConsonants from "./char_maps/doubleConsonants.js"
@@ -29,18 +29,24 @@ import {
 	initialLetters,
 	medialLetters,
 	finalLetters,
+	compatLetters,
+	consonantLetters,
+	vowelLetters,
+	compositeLetters,
+	iotizedVowelLetters,
+	doubleConsonantLetters,
 } from "./utils/chars.js"
+import hash from "./utils/hash.js"
 
-const blockRangeStart = 0xac00 // 가
-const blockRangeEnd = 0xd7a3 // 힣
-const compatibilityRangeStart = 0x3131 // ㄱ
-const compatibilityRangeEnd = 0x3164 // Hangul Filler
-const initialRangeStart = 0x1100 // ᄀ
-const initialRangeEnd = 0x1112 // ᄒ
-const medialRangeStart = 0x1161 // ᅡ
-const medialRangeEnd = 0x1175 // ᅵ
-const finalRangeStart = 0x11a8 // ᆨ
-const finalRangeEnd = 0x11c2 // ᇂ
+const compatHash = hash(compatLetters)
+const consonantHash = hash(consonantLetters)
+const vowelHash = hash(vowelLetters)
+const iotizedVowelHash = hash(iotizedVowelLetters)
+const compositeHash = hash(compositeLetters)
+const doubleConsonantHash = hash(doubleConsonantLetters)
+const initialHash = hash(initialLetters)
+const medialHash = hash(medialLetters)
+const finalHash = hash(finalLetters)
 
 /**
  * Checks if the given value is a compatibility letter.
@@ -53,7 +59,7 @@ const finalRangeEnd = 0x11c2 // ᇂ
  * @returns {boolean}
  */
 export function isCompatibilityLetter(value) {
-	return !!compatibilityLetters[value]
+	return value in compatHash
 }
 
 /**
@@ -68,7 +74,7 @@ export function isCompatibilityLetter(value) {
  * @returns {boolean}
  */
 export function isConsonant(value) {
-	return !!consonants[value]
+	return value in consonantHash
 }
 
 /**
@@ -83,7 +89,7 @@ export function isConsonant(value) {
  * @returns {boolean}
  */
 export function isConsonantCluster(value) {
-	return !!(consonants[value] && compositeLetters[value])
+	return value in consonantHash && value in compositeHash
 }
 
 /**
@@ -98,7 +104,7 @@ export function isConsonantCluster(value) {
  * @returns {boolean}
  */
 export function isDiphthong(value) {
-	return !!(vowels[value] && compositeLetters[value])
+	return value in vowelHash && value in compatHash
 }
 
 /**
@@ -113,7 +119,7 @@ export function isDiphthong(value) {
  * @returns {boolean}
  */
 export function isDoubleConsonant(value) {
-	return !!doubleConsonants[value]
+	return value in doubleConsonantHash
 }
 
 /**
@@ -127,7 +133,7 @@ export function isDoubleConsonant(value) {
  * @returns {boolean}
  */
 export function isFinal(value) {
-	return !!finalLetters[value]
+	return value in finalHash
 }
 
 /**
@@ -153,7 +159,7 @@ export function isHangul(value, options = {}) {
 		return /^[\uac00-\ud7a3\u3131-\u3164\u1100-\u1112\u1161-\u1175\u11a8-\u11c2]+$/u.test(value)
 	} else {
 		return /^[\uac00-\ud7a3\u3131-\u3164\u1100-\u1112\u1161-\u1175\u11a8-\u11c2\P{L}]+$/u.test(
-			value,
+			value
 		)
 	}
 }
@@ -169,7 +175,7 @@ export function isHangul(value, options = {}) {
  * @returns {boolean}
  */
 export function isInitial(value) {
-	return !!initialLetters[value]
+	return value in initialHash
 }
 
 /**
@@ -183,7 +189,7 @@ export function isInitial(value) {
  * @returns {boolean}
  */
 export function isIotizedVowel(value) {
-	return !!iotizedVowels[value]
+	return value in iotizedVowelHash
 }
 
 /**
@@ -197,7 +203,7 @@ export function isIotizedVowel(value) {
  * @returns {boolean}
  */
 export function isMedial(value) {
-	return !!medialLetters[value]
+	return value in medialHash
 }
 
 /**
@@ -211,7 +217,7 @@ export function isMedial(value) {
  * @returns {boolean}
  */
 export function isNonCompatibility(value) {
-	return !!nonCompatibilityLetters[value]
+	return value in initialHash || value in medialHash || value in finalHash
 }
 
 /**
@@ -227,9 +233,9 @@ export function isNonCompatibility(value) {
 export function isSyllable(value) {
 	if (typeof value !== "string" || value.length > 1) return false
 
-	const codepoint = value.codePointAt(0)
+	const charCode = value.codePointAt(0)
 
-	if (codepoint >= 0xac00 && codepoint <= 0xd7a3) return true
+	if (0xac00 <= charCode && charCode <= 0xd7a3) return true
 
 	return false
 }
@@ -246,7 +252,7 @@ export function isSyllable(value) {
  * @returns {boolean}
  */
 export function isVowel(value) {
-	return !!vowels[value]
+	return value in vowelHash
 }
 
 /**
