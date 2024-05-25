@@ -1,21 +1,3 @@
-import compatibilityLetters from "./char_maps/compatibilityLetters.js"
-// import initialLetters from "./char_maps/initialLetters.js"
-// import medialLetters from "./char_maps/medialLetters.js"
-// import finalLetters from "./char_maps/finalLetters.js"
-// import compositeLetters from "./char_maps/compositeLetters.js"
-import consonants from "./char_maps/consonants.js"
-import vowels from "./char_maps/vowels.js"
-import doubleConsonants from "./char_maps/doubleConsonants.js"
-import iotizedVowels from "./char_maps/iotizedVowels.js"
-import toCompatibilityLetter from "./char_maps/toCompatibilityLetter.js"
-import deconstructBlock from "./utils/deconstructBlock.js"
-import constructBlock from "./utils/constructBlock.js"
-import toCompositeLetters from "./char_maps/toCompositeLetters.js"
-import toFinalLetter from "./char_maps/toFinalLetter.js"
-import toInitialLetter from "./char_maps/toInitialLetter.js"
-import toMedialLetter from "./char_maps/toMedialLetter.js"
-import codepointToLetter from "./char_maps/codepointToLetter.js"
-import nonCompatibilityLetters from "./char_maps/nonCompatibilityLetters.js"
 import {
 	finalSplitCompatLetters,
 	initialSplitCompatLetters,
