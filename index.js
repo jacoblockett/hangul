@@ -1,7 +1,7 @@
 import compatibilityLetters from "./char_maps/compatibilityLetters.js"
-import initialLetters from "./char_maps/initialLetters.js"
-import medialLetters from "./char_maps/medialLetters.js"
-import finalLetters from "./char_maps/finalLetters.js"
+// import initialLetters from "./char_maps/initialLetters.js"
+// import medialLetters from "./char_maps/medialLetters.js"
+// import finalLetters from "./char_maps/finalLetters.js"
 import compositeLetters from "./char_maps/compositeLetters.js"
 import consonants from "./char_maps/consonants.js"
 import vowels from "./char_maps/vowels.js"
@@ -16,6 +16,20 @@ import toInitialLetter from "./char_maps/toInitialLetter.js"
 import toMedialLetter from "./char_maps/toMedialLetter.js"
 import codepointToLetter from "./char_maps/codepointToLetter.js"
 import nonCompatibilityLetters from "./char_maps/nonCompatibilityLetters.js"
+import {
+	finalSplitCompatLetters,
+	initialSplitCompatLetters,
+	medialSplitCompatLetters,
+	initialCompatLetters,
+	medialCompatLetters,
+	finalCompatLetters,
+	initialSplitLetters,
+	medialSplitLetters,
+	finalSplitLetters,
+	initialLetters,
+	medialLetters,
+	finalLetters,
+} from "./utils/chars.js"
 
 const blockRangeStart = 0xac00 // 가
 const blockRangeEnd = 0xd7a3 // 힣
@@ -236,25 +250,25 @@ export function isVowel(value) {
 }
 
 /**
- * Deconstructs all of the hangul syllables in the given string into their constituent letters.
+ * Splits the given string, deconstructing all of the hangul syllables into their constituent letters.
  *
  * @example
- * deconstruct("하다") // => ["ㅎ", "ㅏ", "ㄷ", "ㅏ"]
- * deconstruct("했다") // => ["ㅎ", "ㅐ", "ㅆ", "ㄷ", "ㅏ"]
- * deconstruct("했다", {
+ * split("하다") // => ["ㅎ", "ㅏ", "ㄷ", "ㅏ"]
+ * split("했다") // => ["ㅎ", "ㅐ", "ㅆ", "ㄷ", "ㅏ"]
+ * split("했다", {
  *  decouple: true,
  *  compatibility: false
  * }) // => ["ᄒ", "ᅢ", "ᆺ", "ᆺ", "ᄃ", "ᅡ"]
  *
- * @param {string} value The value to deconstruct
+ * @param {string} value The value to split
  * @param {object} [options]
- * @param {boolean} options.group Groups each found syllable in its own array (default = `false`)
+ * @param {boolean} options.group Groups each found syllable/grapheme in its own array (default = `false`)
  * @param {boolean} options.decouple Decomposes composite letters (i.e. ㄲ, ㄵ, etc.) into individual letters (default = `false`)
- * @param {boolean} options.compatibility Converts the deconstructed letters into their compatibility form (default = `true`)
+ * @param {boolean} options.compatibility Converts the split letters into their compatibility form (default = `true`)
  * @returns {string[]|string[][]}
  */
-export function deconstruct(value, options = {}) {
-	if (typeof value !== "string") throw new TypeError(`Expected value to be a string`)
+export function split(string, options = {}) {
+	if (typeof string !== "string") throw new TypeError(`Expected string to be a string`)
 	if (!options || options.constructor !== Object) options = {}
 
 	options.group = typeof options.group === "boolean" ? options.group : false
@@ -262,58 +276,84 @@ export function deconstruct(value, options = {}) {
 	options.compatibility = typeof options.compatibility === "boolean" ? options.compatibility : true
 
 	let result = []
-	let deconstructed
 
-	for (let i = 0; i < value.length; i++) {
-		const char = value[i]
+	for (let char of string) {
 		const charCode = char.codePointAt(0)
 
+		let temp = []
+
 		if (0xac00 <= charCode && charCode <= 0xd7a3) {
-			const baseIndex = charCode - 0xac00
-			const initial = codepointToLetter[~~(baseIndex / 588) + 0x1100]
-			const medial = codepointToLetter[~~((baseIndex % 588) / 28) + 0x1161]
-			const final = baseIndex % 28 ? codepointToLetter[(baseIndex % 28) + 0x11a8 - 1] : 0
+			const base = charCode - 0xac00
+			const initialIndex = ~~((charCode - 0xac00) / 588)
+			const medialIndex = ~~(((charCode - 0xac00) % 588) / 28)
+			const finalIndex = (charCode - 0xac00) % 28
+			let initial, medial, final
 
-			if (options.compatibility) {
-				deconstructed = [toCompatibilityLetter[initial], toCompatibilityLetter[medial]]
-
-				if (final) deconstructed.push(toCompatibilityLetter[final])
+			if (options.compatibility && options.decouple) {
+				initial = initialSplitCompatLetters[initialIndex]
+				medial = medialSplitCompatLetters[medialIndex]
+				final = finalSplitCompatLetters[finalIndex]
+			} else if (options.compatibility) {
+				initial = initialCompatLetters[initialIndex]
+				medial = medialCompatLetters[medialIndex]
+				final = finalCompatLetters[finalIndex]
+			} else if (options.decouple) {
+				initial = initialSplitLetters[initialIndex]
+				medial = medialSplitLetters[medialIndex]
+				final = finalSplitLetters[finalIndex]
 			} else {
-				deconstructed = [initial, medial]
-
-				if (final) deconstructed.push(final)
+				initial = initialLetters[initialIndex]
+				medial = medialLetters[medialIndex]
+				final = finalLetters[finalIndex]
 			}
-		} else {
-			if (options.compatibility) {
-				deconstructed = [toCompatibilityLetter[char] || char]
+
+			if (typeof initial === "string") {
+				temp.push(initial)
 			} else {
-				deconstructed = [char]
-			}
-		}
-
-		if (options.decouple) {
-			const newDeconstructed = []
-
-			for (let j = 0; j < deconstructed.length; j++) {
-				const letter = deconstructed[j]
-				const letters = compositeLetters[letter]
-
-				if (letters) {
-					for (let k = 0; k < letters.length; k++) {
-						newDeconstructed.push(letters[k])
-					}
-				} else {
-					newDeconstructed.push(letter)
-				}
+				temp = temp.concat(initial)
 			}
 
-			deconstructed = newDeconstructed
+			if (typeof medial === "string") {
+				temp.push(medial)
+			} else {
+				temp = temp.concat(medial)
+			}
+
+			if (typeof final === "string") {
+				temp.push(final)
+			} else {
+				temp = temp.concat(final)
+			}
+		} else if (options.compatibility && char in initialLetters) {
+			if (options.decouple) char = initialSplitLetters[charCode - 0x1100]
+
+			if (typeof char === "string") {
+				temp.push(char)
+			} else {
+				temp = temp.concat(char)
+			}
+		} else if (options.compatibility && char in medialLetters) {
+			if (options.decouple) char = medialSplitLetters[charCode - 0x1161]
+
+			if (typeof char === "string") {
+				temp.push(char)
+			} else {
+				temp = temp.concat(char)
+			}
+		} else if (options.compatibility && char in finalLetters) {
+			if (options.decouple) char = finalSplitLetters[charCode - 0x11a8 - 1]
+
+			if (typeof char === "string") {
+				temp.push(char)
+			} else {
+				temp = temp.concat(char)
+			}
 		}
 
 		if (options.group) {
-			result.push(deconstructed)
+			result.push(temp)
 		} else {
-			result = result.concat(deconstructed)
+			result = result.concat(temp)
 		}
 	}
 
