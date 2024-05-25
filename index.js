@@ -248,7 +248,7 @@ export function isVowel(value) {
  *  compatibility: false
  * }) // => ["ᄒ", "ᅢ", "ᆺ", "ᆺ", "ᄃ", "ᅡ"]
  *
- * @param {string} value The value to split
+ * @param {string} string The string to split
  * @param {object} [options]
  * @param {boolean} options.group Groups each found syllable/grapheme in its own array (default = `false`)
  * @param {boolean} options.decouple Decomposes composite letters (i.e. ㄲ, ㄵ, etc.) into individual letters (default = `false`)
@@ -336,6 +336,8 @@ export function split(string, options = {}) {
 			} else {
 				temp = temp.concat(char)
 			}
+		} else {
+			temp = [char]
 		}
 
 		if (options.group) {
@@ -349,32 +351,34 @@ export function split(string, options = {}) {
 }
 
 /**
- * Constructs the given string into valid hangul syllables. When deconstruct is true, `construct`
- * will build the new string by mimicing typing using the dubeolsik (두벌식) layout.
- * When it's false, `construct` will not deconstruct already-formed syllables and will push them
+ * Joins the given string into valid hangul syllables. When split is true, `join`
+ * will build the new string by mimicing typing using the dubeolsik (두벌식) layout/algo.
+ * When it's false, `join` will not split already-formed syllables and will push them
  * as is, only considering loose letters.
  *
- * @note `construct` will always convert any non-compatibility letters into compatibility letters
+ * @note `join` will always convert any non-compatibility letters into compatibility letters
  *
  * @example
- * construct("ㅎㅏㄴ") // => 한
- * construct("ㄱ가") // => 까
- * construct("ㄱ가", { deconstruct: false }) // => ㄱ가
+ * join("ㅎㅏㄴ") // => 한
+ * join("ㄱ가") // => 까
+ * join("ㄱ가", { split: false }) // => ㄱ가
  *
- * @param {string} value The value to construct
+ * @param {string} string The string to join
  * @param {object} options
- * @param {boolean} deconstruct Deconstructs the string before parsing (default = true)
+ * @param {boolean} split Splits the string before parsing (default = true)
  * @returns {string}
  */
-export function construct(value, options = {}) {
-	if (typeof value !== "string") throw new TypeError(`Expected value to be a string`)
+export function join(string, options = {}) {
+	if (typeof string !== "string") throw new TypeError(`Expected string to be a string`)
 	if (!options || options.constructor !== Object) options = {}
 
-	options.deconstruct = typeof options.deconstruct === "boolean" ? options.deconstruct : true
+	options.split = typeof options.split === "boolean" ? options.split : true
 
-	const characters = options.deconstruct ? deconstruct(value) : [...value.normalize()]
+	const characters = options.split ? split(string) : [...string.normalize()]
 	const syllable = []
 	const result = []
+
+	console.log(characters)
 
 	function pushSyllable() {
 		if (syllable.length > 1) {
@@ -394,8 +398,8 @@ export function construct(value, options = {}) {
 			// and reset
 			pushSyllable()
 			result.push(char)
-		} else if (!options.deconstruct && isSyllable(char)) {
-			// If the current char is a syllable block (in non-deconstructive mode),
+		} else if (!options.split && isSyllable(char)) {
+			// If the current char is a syllable block (in non-split mode),
 			// process the syllable, push the char, and reset
 			pushSyllable()
 			result.push(char)
