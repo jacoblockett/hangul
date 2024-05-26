@@ -385,29 +385,32 @@ export function join(string, options = {}) {
 	options.split = typeof options.split === "boolean" ? options.split : true
 
 	const characters = options.split ? split(string) : [...string.normalize()]
-	const block = []
 	const result = []
+	let block = []
+
+	// TODO: figure out how to squeeze more performance out of this
 
 	function pushBlock() {
 		if (block.length > 1) {
 			const [initial, medial, final] = block
-			const initialIndex = initialHash[compatToInitial[initial] || initial]
-			const medialIndex = medialHash[compatToMedial[medial] || medial]
-			const finalIndex = finalHash[compatToFinal[final] || final]
+			const initialIndex = initialHash[compatToInitial[initial]]
+			const medialIndex = medialHash[compatToMedial[medial]]
+			const finalIndex = finalHash[compatToFinal[final]]
 			const formedBlock = String.fromCodePoint(
 				initialIndex * 588 + medialIndex * 28 + finalIndex + 0xac00
 			)
 
 			result.push(formedBlock)
-			block.length = 0
+			block = []
 		} else if (block.length === 1) {
 			result.push(block[0])
-			block.length = 0
+			block = []
 		}
 	}
 
-	while (characters.length) {
-		const char = characters.shift()
+	for (let i = 0; i < characters.length; i++) {
+		const char = characters[i]
+		const compatChar = toCompat[char] || char
 
 		if (!isHangul(char, { strict: true })) {
 			// If the current char isn't hangul, process the block, push the char
@@ -426,7 +429,6 @@ export function join(string, options = {}) {
 			// 3. check if cur is a vowel and final block composite letter's second letter is
 			//    valid initial letter
 			// 4. push the block and reset
-			const compatChar = toCompat[char] || char
 			const compositeChar = compatToComposite[`${block[2]}${compatChar}`]
 
 			if (compositeChar) {
@@ -452,7 +454,6 @@ export function join(string, options = {}) {
 			// 1. check if a composite vowel can be made
 			// 2. check if a valid final letter can be pushed.
 			// 3. check if the current char is a valid initial letter
-			const compatChar = toCompat[char] || char
 			const composite = compatToComposite[`${block[1]}${compatChar}`]
 
 			if (composite) {
@@ -473,7 +474,6 @@ export function join(string, options = {}) {
 			// 1. check if a composite initial letter can be made
 			// 2. check if a valid medial letter can be pushed
 			// 3. check if the current char is a valid inital letter
-			const compatChar = toCompat[char] || char
 			const composite = compatToComposite[`${block[0]}${compatChar}`]
 
 			if (composite) {
@@ -486,17 +486,15 @@ export function join(string, options = {}) {
 				if (compatToInitial[compatChar]) {
 					block.push(compatChar)
 				} else {
-					result.push(char) // should this push compatChar? needs testing.
+					result.push(compatChar)
 				}
 			}
 		} else {
 			// If no letters yet, check if the current char is a valid initial letter
-			const compatChar = toCompat[char] || char
-
 			if (compatToInitial[compatChar]) {
 				block.push(compatChar)
 			} else {
-				result.push(char) // should this push compatChar? needs testing.
+				result.push(compatChar)
 			}
 		}
 	}
