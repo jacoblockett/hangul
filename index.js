@@ -17,6 +17,11 @@ import {
 	compositeLetters,
 	iotizedVowelLetters,
 	doubleConsonantLetters,
+	toCompatMap,
+	compatToInitialMap,
+	compatToMedialMap,
+	compatToFinalMap,
+	compatToCompositeMap,
 } from "./utils/chars.js"
 import hash from "./utils/hash.js"
 
@@ -29,6 +34,11 @@ const doubleConsonantHash = hash(doubleConsonantLetters)
 const initialHash = hash(initialLetters)
 const medialHash = hash(medialLetters)
 const finalHash = hash(finalLetters)
+const toCompat = hash(toCompatMap, { conversionMap: true })
+const compatToInitial = hash(compatToInitialMap, { conversionMap: true })
+const compatToMedial = hash(compatToMedialMap, { conversionMap: true })
+const compatToFinal = hash(compatToFinalMap, { conversionMap: true })
+const compatToComposite = hash(compatToCompositeMap, { conversionMap: true })
 
 /**
  * Checks if the given value is a compatibility letter.
@@ -351,9 +361,9 @@ export function split(string, options = {}) {
 }
 
 /**
- * Joins the given string into valid hangul syllables. When split is true, `join`
+ * Joins the given string into valid hangul syllable blocks. When split is true, `join`
  * will build the new string by mimicing typing using the dubeolsik (두벌식) layout/algo.
- * When it's false, `join` will not split already-formed syllables and will push them
+ * When it's false, `join` will not split already-formed syllable blocks and will push them
  * as is, only considering loose letters.
  *
  * @note `join` will always convert any non-compatibility letters into compatibility letters
@@ -375,18 +385,24 @@ export function join(string, options = {}) {
 	options.split = typeof options.split === "boolean" ? options.split : true
 
 	const characters = options.split ? split(string) : [...string.normalize()]
-	const syllable = []
+	const block = []
 	const result = []
 
-	console.log(characters)
+	function pushBlock() {
+		if (block.length > 1) {
+			const [initial, medial, final] = block
+			const initialIndex = initialHash[compatToInitial[initial] || initial]
+			const medialIndex = medialHash[compatToMedial[medial] || medial]
+			const finalIndex = finalHash[compatToFinal[final] || final]
+			const formedBlock = String.fromCodePoint(
+				initialIndex * 588 + medialIndex * 28 + finalIndex + 0xac00
+			)
 
-	function pushSyllable() {
-		if (syllable.length > 1) {
-			result.push(constructBlock(...syllable))
-			syllable.length = 0
-		} else if (syllable.length === 1) {
-			result.push(...syllable)
-			syllable.length = 0
+			result.push(formedBlock)
+			block.length = 0
+		} else if (block.length === 1) {
+			result.push(block[0])
+			block.length = 0
 		}
 	}
 
@@ -394,98 +410,98 @@ export function join(string, options = {}) {
 		const char = characters.shift()
 
 		if (!isHangul(char, { strict: true })) {
-			// If the current char isn't hangul, process the syllable, push the char
+			// If the current char isn't hangul, process the block, push the char
 			// and reset
-			pushSyllable()
+			pushBlock()
 			result.push(char)
-		} else if (!options.split && isSyllable(char)) {
+		} else if (!options.split && isBlock(char)) {
 			// If the current char is a syllable block (in non-split mode),
-			// process the syllable, push the char, and reset
-			pushSyllable()
+			// process the block, push the char, and reset
+			pushBlock()
 			result.push(char)
-		} else if (syllable.length === 3) {
-			// If the syllable has three letters,
+		} else if (block.length === 3) {
+			// If the block has three letters,
 			// 1. check if a composite final letter can be made
-			// 2. check if cur is a vowel and final syllable letter is valid initial letter
-			// 3. check if cur is a vowel and final syllable composite letter's second letter is
+			// 2. check if cur is a vowel and final block letter is valid initial letter
+			// 3. check if cur is a vowel and final block composite letter's second letter is
 			//    valid initial letter
-			// 4. push the syllable and reset
-			const compatChar = toCompatibilityLetter[char] || char
-			const composite = toCompositeLetters[`${syllable[2]}${compatChar}`]
+			// 4. push the block and reset
+			const compatChar = toCompat[char] || char
+			const compositeChar = compatToComposite[`${block[2]}${compatChar}`]
 
-			if (composite) {
-				syllable[2] = composite
-			} else if (vowels[compatChar] && toInitialLetter[syllable[2]]) {
-				const initial = syllable.pop()
+			if (compositeChar) {
+				block[2] = compositeChar
+			} else if (vowelHash[compatChar] && compatToInitial[block[2]]) {
+				const initial = block.pop()
 
-				pushSyllable()
-				syllable.push(initial, compatChar)
-			} else if (vowels[compatChar] && toInitialLetter[compositeLetters[syllable[2]]?.[1]]) {
-				const [final, initial] = compositeLetters[syllable.pop()]
+				pushBlock()
+				block.push(initial, compatChar)
+			} else if (vowelHash[compatChar] && compatToInitial[compositeLetters[block[2]]?.[1]]) {
+				const [final, initial] = compositeLetters[block.pop()]
 
-				syllable.push(final)
-				pushSyllable()
+				block.push(final)
+				pushBlock()
 
-				syllable.push(initial, compatChar)
+				block.push(initial, compatChar)
 			} else {
-				pushSyllable()
-				syllable.push(compatChar)
+				pushBlock()
+				block.push(compatChar)
 			}
-		} else if (syllable.length === 2) {
-			// If the syllable has two letters,
+		} else if (block.length === 2) {
+			// If the block has two letters,
 			// 1. check if a composite vowel can be made
 			// 2. check if a valid final letter can be pushed.
 			// 3. check if the current char is a valid initial letter
-			const compatChar = toCompatibilityLetter[char] || char
-			const composite = toCompositeLetters[`${syllable[1]}${compatChar}`]
+			const compatChar = toCompat[char] || char
+			const composite = compatToComposite[`${block[1]}${compatChar}`]
 
 			if (composite) {
-				syllable[1] = composite
-			} else if (toFinalLetter[compatChar]) {
-				syllable.push(compatChar)
+				block[1] = composite
+			} else if (compatToFinal[compatChar]) {
+				block.push(compatChar)
 			} else {
-				pushSyllable()
+				pushBlock()
 
-				if (toInitialLetter[compatChar]) {
-					syllable.push(compatChar)
+				if (compatToInitial[compatChar]) {
+					block.push(compatChar)
 				} else {
 					result.push(char) // should this push compatChar? needs testing.
 				}
 			}
-		} else if (syllable.length === 1) {
-			// If the syllable has one letter,
+		} else if (block.length === 1) {
+			// If the block has one letter,
 			// 1. check if a composite initial letter can be made
 			// 2. check if a valid medial letter can be pushed
 			// 3. check if the current char is a valid inital letter
-			const compatChar = toCompatibilityLetter[char] || char
-			const composite = toCompositeLetters[`${syllable[0]}${compatChar}`]
+			const compatChar = toCompat[char] || char
+			const composite = compatToComposite[`${block[0]}${compatChar}`]
 
 			if (composite) {
-				syllable[0] = composite
-			} else if (toMedialLetter[compatChar]) {
-				syllable.push(compatChar)
+				block[0] = composite
+			} else if (compatToMedial[compatChar]) {
+				block.push(compatChar)
 			} else {
-				pushSyllable()
+				pushBlock()
 
-				if (toInitialLetter[compatChar]) {
-					syllable.push(compatChar)
+				if (compatToInitial[compatChar]) {
+					block.push(compatChar)
 				} else {
 					result.push(char) // should this push compatChar? needs testing.
 				}
 			}
 		} else {
 			// If no letters yet, check if the current char is a valid initial letter
-			const compatChar = toCompatibilityLetter[char] || char
+			const compatChar = toCompat[char] || char
 
-			if (toInitialLetter[compatChar]) {
-				syllable.push(compatChar)
+			if (compatToInitial[compatChar]) {
+				block.push(compatChar)
 			} else {
 				result.push(char) // should this push compatChar? needs testing.
 			}
 		}
 	}
 
-	pushSyllable()
+	pushBlock()
 
 	return result.join("")
 }
