@@ -171,7 +171,7 @@ export function isInitial(value) {
 }
 
 /**
- * Checks if the given value is a non-compatibility, initial consonant.
+ * Checks if the given value is an iotized vowel, one that begins with the /j/ phoneme.
  *
  * @example
  * isIotizedVowel("ㅑ") // true
