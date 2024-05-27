@@ -1,3 +1,4 @@
+import endsWith from "./lib/endsWith.js"
 import isCompatibilityLetter from "./lib/isCompatibilityLetter.js"
 import isConsonant from "./lib/isConsonant.js"
 import isConsonantCluster from "./lib/isConsonantCluster.js"
@@ -13,8 +14,10 @@ import isSyllable from "./lib/isSyllable.js"
 import isVowel from "./lib/isVowel.js"
 import join from "./lib/join.js"
 import split from "./lib/split.js"
+import startsWith from "./lib/startsWith.js"
 
 export default {
+	endsWith,
 	isCompatibilityLetter,
 	isCompositeConsonant: isConsonantCluster,
 	isCompositeVowel: isDiphthong,
@@ -32,4 +35,5 @@ export default {
 	isVowel,
 	join,
 	split,
+	startsWith,
 }
