@@ -1,10 +1,11 @@
-# Hangul
+# <p align="center">Hangul</p>
+
+*<p align="center">A library dedicated to working the the Korean alphabet, Hangul.</p>*
+
 
 > ⚠️ This library is still under development and breaking changes may be many until a v1.0.0 version is released. Use with caution.
 
 > ⚠️ This package uses ESM and has no plans to offer a CJS counterpart. Be sure your environment is configured to use ESM.
-
-A library dedicated to working the the Korean alphabet, Hangul.
 
 ## Installation
 
@@ -18,21 +19,21 @@ git clone "https://github.com/jacoblockett/hangul"
 
 This package comes with many useful functions, and more to come!
 
-- [isCompatibilityLetter](#iscompatibilityletter-🔝)
-- [isConsonant](#isconsonant-🔝)
-- [isConsonantCluster](#isconsonantcluster-🔝)
-- [isDiphthong](#isdiphthong-🔝)
-- [isDoubleConsonant](#isdoubleconsonant-🔝)
-- [isFinal](#isfinal-🔝)
-- [isHangul](#ishangul-🔝)
-- [isInitial](#isinitial-🔝)
-- [isIotizedVowel](#isiotizedvowel-🔝)
-- [isMedial](#ismedial-🔝)
-- [isNonCompatibilityLetter](#isnoncompatibilityletter-🔝)
-- [isSyllable](#issyllable-🔝)
-- [isVowel](#isvowel-🔝)
-- [join](#join-🔝)
-- [split](#split-🔝)
+- [isCompatibilityLetter](#iscompatibilityletter-)
+- [isConsonant](#isconsonant-)
+- [isConsonantCluster](#isconsonantcluster-)
+- [isDiphthong](#isdiphthong-)
+- [isDoubleConsonant](#isdoubleconsonant-)
+- [isFinal](#isfinal-)
+- [isHangul](#ishangul-)
+- [isInitial](#isinitial-)
+- [isIotizedVowel](#isiotizedvowel-)
+- [isMedial](#ismedial-)
+- [isNonCompatibilityLetter](#isnoncompatibilityletter-)
+- [isSyllable](#issyllable-)
+- [isVowel](#isvowel-)
+- [join](#join-)
+- [split](#split-)
 
 ### isCompatibilityLetter [🔝](#usage)
 
@@ -53,7 +54,7 @@ isCompatibilityLetter("ᄀ") // false
 
 ### isCompositeConsonant [🔝](#usage)
 
-➡️ ***[isConsonantCluster](#isconsonantcluster-🔝)***
+➡️ ***[isConsonantCluster](#isconsonantcluster-)***
 
 Checks if the given value is a consonant cluster, a cluster of two consonants as one letter.
 
@@ -72,7 +73,7 @@ isCompositeConsonant("ㄱ") // false
 
 ### isCompositeVowel [🔝](#usage)
 
-➡️ ***[isDiphthong](#isdiphthong-🔝)***
+➡️ ***[isDiphthong](#isdiphthong-)***
 
 Checks if the given value is a diphthong, a cluster of two vowels as one letter.
 
@@ -108,7 +109,7 @@ isConsonant("ㅏ") // false
 
 ### isConsonantCluster [🔝](#usage)
 
-➡️ ***[isCompositeConsonant](#iscompositeconsonant-🔝)***
+➡️ ***[isCompositeConsonant](#iscompositeconsonant-)***
 
 Checks if the given value is a consonant cluster, a cluster of two consonants as one letter.
 
@@ -127,7 +128,7 @@ isConsonantCluster("ㄱ") // false
 
 ### isDiphthong [🔝](#usage)
 
-➡️ ***[isCompositeVowel](#iscompositevowel-🔝)***
+➡️ ***[isCompositeVowel](#iscompositevowel-)***
 
 Checks if the given value is a diphthong, a cluster of two vowels as one letter.
 
