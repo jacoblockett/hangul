@@ -138,7 +138,8 @@ export function isFinal(value) {
  * isHangul("안녕하세요!", { strict: true }) // => false
  *
  * @param {unknown} value The value to check
- * @param {{strict: boolean}} [options] An options object to customize the return (default = `{ strict: false }`)
+ * @param {object} [options] An options object to customize the return (default = `{ strict: false }`)
+ * @param {boolean} options.strict Disallows symbols and numbers from being considered valid Hangul characters
  * @returns
  */
 export function isHangul(value, options = {}) {
@@ -213,7 +214,7 @@ export function isNonCompatibility(value) {
 }
 
 /**
- * Checks if the given value is a hangul syllable.
+ * Checks if the given value is a hangul syllable block.
  *
  * @example
  * isSyllable("한") // => true
@@ -236,7 +237,6 @@ export function isSyllable(value) {
  * Checks if the given value is a vowel.
  *
  * @example
- * isVowel("ᅡ") // true
  * isVowel("ㅏ") // true
  * isVowel("ㄱ") // false
  *
