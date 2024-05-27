@@ -77,7 +77,7 @@ Extracts the final letter from the given Hangul syllable block.
 ```typescript
 function getFinal(str: string, options?: {
     compatibility: boolean,
-}): boolean
+}): string
 ```
 
 #### Options
@@ -103,7 +103,7 @@ Extracts the initial letter from the given Hangul syllable block.
 ```typescript
 function getInitial(str: string, options?: {
     compatibility: boolean,
-}): boolean
+}): string
 ```
 
 #### Options
@@ -128,7 +128,7 @@ Extracts the medial letter from the given Hangul syllable block.
 ```typescript
 function getMedial(str: string, options?: {
     compatibility: boolean,
-}): boolean
+}): string
 ```
 
 #### Options
