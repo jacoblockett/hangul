@@ -1,5 +1,7 @@
 import endsWith from "./lib/endsWith.js"
+import getFinal from "./lib/getFinal.js"
 import getInitial from "./lib/getInitial.js"
+import getMedial from "./lib/getMedial.js"
 import isCompatibilityLetter from "./lib/isCompatibilityLetter.js"
 import isConsonant from "./lib/isConsonant.js"
 import isConsonantCluster from "./lib/isConsonantCluster.js"
@@ -19,7 +21,9 @@ import startsWith from "./lib/startsWith.js"
 
 export default {
 	endsWith,
+	getFinal,
 	getInitial,
+	getMedial,
 	isCompatibilityLetter,
 	isCompositeConsonant: isConsonantCluster,
 	isCompositeVowel: isDiphthong,
