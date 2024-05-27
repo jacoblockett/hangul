@@ -160,8 +160,8 @@ export function isHangul(value, options = {}) {
  * Checks if the given value is a non-compatibility, initial consonant.
  *
  * @example
- * isInitial("ㄲ") // true
- * isInitial("ㄲ") // false
+ * isInitial("ᄀ") // true
+ * isInitial("ㄱ") // false
  *
  * @param {unknown} value The value to check
  * @returns {boolean}
