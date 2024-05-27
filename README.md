@@ -1,6 +1,6 @@
 # <p align="center">Hangul</p>
 
-*<p align="center">A library dedicated to working the the Korean alphabet, Hangul.</p>*
+*<p align="center">A library dedicated to working with the Korean alphabet, Hangul.</p>*
 
 
 > ⚠️ This library is still under development and breaking changes may be many until a v1.0.0 version is released. Use with caution.
