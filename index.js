@@ -16,6 +16,8 @@ import split from "./lib/split.js"
 
 export default {
 	isCompatibilityLetter,
+	isCompositeConsonant: isConsonantCluster,
+	isCompositeVowel: isDiphthong,
 	isConsonant,
 	isConsonantCluster,
 	isDiphthong,
