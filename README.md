@@ -19,6 +19,10 @@ git clone "https://github.com/jacoblockett/hangul"
 
 This package comes with many useful functions, and more to come!
 
+- [endsWith](#endswith-)
+- [getFinal](#getfinal-)
+- [getInitial](#getinitial-)
+- [getMedial](#getmedial-)
 - [isCompatibilityLetter](#iscompatibilityletter-)
 - [isConsonant](#isconsonant-)
 - [isConsonantCluster](#isconsonantcluster-)
@@ -34,6 +38,111 @@ This package comes with many useful functions, and more to come!
 - [isVowel](#isvowel-)
 - [join](#join-)
 - [split](#split-)
+- [startsWith](#startswith-)
+
+### endsWith [🔝](#usage)
+
+Checks if the given search string exists at the end of the given operation string.
+
+#### Signature
+
+```typescript
+function endsWith(str: string, options?: {
+    decouple: boolean,
+}): boolean
+```
+
+#### Options
+
+Name|Default Value|Description
+---|---|---
+decouple|true|Decouples the composite letters before performing the search
+
+#### Example
+
+```javascript
+endsWith("한글", "글") // true
+endsWith("한글", "ㅡㄹ") // true
+endsWith("한글", "한") // false
+endsWith("늙다", "ㄱ다") // true
+endsWith("늙다", "ㄱ다", { decouple: false }) // false
+```
+
+### getFinal [🔝](#usage)
+
+Extracts the final letter from the given Hangul syllable block.
+
+#### Signature
+
+```typescript
+function getFinal(str: string, options?: {
+    compatibility: boolean,
+}): boolean
+```
+
+#### Options
+
+Name|Default Value|Description
+---|---|---
+compatibility|true|Converts the final letter into its compatibility form
+
+#### Example
+
+```javascript
+getFinal("한") // "ㄴ"
+getFinal("한", { compatibility: false }) // "ᆫ"
+getFinal("하") // ""
+```
+
+### getInitial [🔝](#usage)
+
+Extracts the initial letter from the given Hangul syllable block.
+
+#### Signature
+
+```typescript
+function getInitial(str: string, options?: {
+    compatibility: boolean,
+}): boolean
+```
+
+#### Options
+
+Name|Default Value|Description
+---|---|---
+compatibility|true|Converts the initial letter into its compatibility form
+
+#### Example
+
+```javascript
+getInitial("한") // "ㅎ"
+getInitial("한", { compatibility: false }) // "ᄒ"
+```
+
+### getMedial [🔝](#usage)
+
+Extracts the medial letter from the given Hangul syllable block.
+
+#### Signature
+
+```typescript
+function getMedial(str: string, options?: {
+    compatibility: boolean,
+}): boolean
+```
+
+#### Options
+
+Name|Default Value|Description
+---|---|---
+compatibility|true|Converts the medial letter into its compatibility form
+
+#### Example
+
+```javascript
+getMedial("한") // "ㅏ"
+getMedial("한", { compatibility: false }) // "ᅡ"
+```
 
 ### isCompatibilityLetter [🔝](#usage)
 
@@ -362,6 +471,34 @@ compatibility|true|Converts all letters from non-compatibility letters to compat
 split("하다") // ["ㅎ", "ㅏ", "ㄷ", "ㅏ"]
 split("했다") // ["ㅎ", "ㅐ", "ㅆ", "ㄷ", "ㅏ"]
 split("했다", { decouple: true, compatibility: false }) // ["ᄒ", "ᅢ", "ᆺ", "ᆺ", "ᄃ", "ᅡ"]
+```
+
+### startsWith [🔝](#usage)
+
+Checks if the given search string exists at the beginning of the given operation string.
+
+#### Signature
+
+```typescript
+function startsWith(str: string, options?: {
+    decouple: boolean,
+}): boolean
+```
+
+#### Options
+
+Name|Default Value|Description
+---|---|---
+decouple|true|Decouples the composite letters before performing the search
+
+#### Example
+
+```javascript
+startsWith("한글", "한") // true
+startsWith("한글", "ㅎㅏ") // true
+startsWith("한글", "글") // false
+startsWith("늙다", "늘") // true
+startsWith("늙다", "늘", { decouple: false }) // false
 ```
 
 ---
