@@ -18,6 +18,7 @@ import isVowel from "./lib/isVowel.js"
 import join from "./lib/join.js"
 import split from "./lib/split.js"
 import startsWith from "./lib/startsWith.js"
+import toIotized from "./lib/toIotized.js"
 
 export default {
 	/**
@@ -119,4 +120,8 @@ export default {
 	 * Checks if the given search string exists at the beginning of the given operation string.
 	 */
 	startsWith,
+	/**
+	 * Converts all vowels that can be iotized within the given string.
+	 */
+	toIotized,
 }
