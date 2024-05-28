@@ -39,6 +39,7 @@ This package comes with many useful functions, and more to come!
 - [join](#join-)
 - [split](#split-)
 - [startsWith](#startswith-)
+- [toIotized](#toiotized-)
 
 ### endsWith [🔝](#usage)
 
@@ -499,6 +500,23 @@ startsWith("한글", "ㅎㅏ") // true
 startsWith("한글", "글") // false
 startsWith("늙다", "늘") // true
 startsWith("늙다", "늘", { decouple: false }) // false
+```
+
+### toIotized [🔝](#usage)
+
+Converts all vowels that can be iotized within the given string.
+
+#### Signature
+
+```typescript
+function toIotized(str: string): string
+```
+
+#### Example
+
+```javascript
+toIotized("ㅏ") // "ㅑ"
+toIotized("한국") // "햔귝"
 ```
 
 ---
