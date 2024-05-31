@@ -18,7 +18,10 @@ import isVowel from "./lib/isVowel.js"
 import join from "./lib/join.js"
 import split from "./lib/split.js"
 import startsWith from "./lib/startsWith.js"
+import toAspirated from "./lib/toAspirated.js"
+import toFortis from "./lib/toFortis.js"
 import toIotized from "./lib/toIotized.js"
+import toLenis from "./lib/toLenis.js"
 
 export default {
 	/**
@@ -121,7 +124,19 @@ export default {
 	 */
 	startsWith,
 	/**
+	 * Converts all consonants into their aspirated form.
+	 */
+	toAspirated,
+	/**
+	 * Converts all consonants into their fortis (tensed) form.
+	 */
+	toFortis,
+	/**
 	 * Converts all vowels that can be iotized within the given string.
 	 */
 	toIotized,
+	/**
+	 * Converts all consonants into their lenis (soft) form.
+	 */
+	toLenis,
 }
