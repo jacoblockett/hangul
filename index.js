@@ -2,26 +2,35 @@ import endsWith from "./lib/endsWith.js"
 import getFinal from "./lib/getFinal.js"
 import getInitial from "./lib/getInitial.js"
 import getMedial from "./lib/getMedial.js"
-import isCompatibilityLetter from "./lib/isCompatibilityLetter.js"
+import isAspirated from "./lib/isAspirated.js"
+import isCompatibility from "./lib/isCompatibility.js"
 import isConsonant from "./lib/isConsonant.js"
 import isConsonantCluster from "./lib/isConsonantCluster.js"
 import isDiphthong from "./lib/isDiphthong.js"
 import isDoubleConsonant from "./lib/isDoubleConsonant.js"
 import isFinal from "./lib/isFinal.js"
+import isFortis from "./lib/isFortis.js"
 import isHangul from "./lib/isHangul.js"
 import isInitial from "./lib/isInitial.js"
 import isIotizedVowel from "./lib/isIotizedVowel.js"
+import isLenis from "./lib/isLenis.js"
 import isMedial from "./lib/isMedial.js"
-import isNonCompatibilityLetter from "./lib/isNonCompatibilityLetter.js"
+import isNonCompatibility from "./lib/isNonCompatibility.js"
 import isSyllable from "./lib/isSyllable.js"
 import isVowel from "./lib/isVowel.js"
 import join from "./lib/join.js"
 import split from "./lib/split.js"
 import startsWith from "./lib/startsWith.js"
 import toAspirated from "./lib/toAspirated.js"
+import toCompatibility from "./lib/toCompatibility.js"
+import toDoubleConsonant from "./lib/toDoubleConsonant.js"
+import toFinal from "./lib/toFinal.js"
 import toFortis from "./lib/toFortis.js"
+import toInitial from "./lib/toInitial.js"
 import toIotized from "./lib/toIotized.js"
 import toLenis from "./lib/toLenis.js"
+import toMedial from "./lib/toMedial.js"
+import toSingleConsonant from "./lib/toSingleConsonant.js"
 
 export default {
 	/**
@@ -41,9 +50,13 @@ export default {
 	 */
 	getMedial,
 	/**
+	 * Checks if the given value is an aspirated consonant.
+	 */
+	isAspirated,
+	/**
 	 * Checks if the given value is a compatibility letter.
 	 */
-	isCompatibilityLetter,
+	isCompatibility,
 	/**
 	 * Checks if the given value is a consonant cluster, a cluster of two consonants as one letter.
 	 *
@@ -81,6 +94,10 @@ export default {
 	 */
 	isFinal,
 	/**
+	 * Checks if the given value is a fortis (tensed) consonant.
+	 */
+	isFortis,
+	/**
 	 * Checks if the given value is some sort of Hangul characters, either a loose
 	 * letter or a syllable block. By default, symbols and numbers are allowed to pass.
 	 * Use the `options.strict` boolean to disallow this behavior.
@@ -95,13 +112,17 @@ export default {
 	 */
 	isIotizedVowel,
 	/**
+	 * Checks if the given value is a lenis (soft) consonant.
+	 */
+	isLenis,
+	/**
 	 * Checks if the given value is a non-compatibility, medial vowel.
 	 */
 	isMedial,
 	/**
 	 * Checks if the given value is a non-compatibility letter.
 	 */
-	isNonCompatibilityLetter,
+	isNonCompatibility,
 	/**
 	 * Checks if the given value is a Hangul syllable block.
 	 */
@@ -128,9 +149,25 @@ export default {
 	 */
 	toAspirated,
 	/**
+	 * Converts all letters into their compatibility form.
+	 */
+	toCompatibility,
+	/**
+	 * Converts all consonants into their double consonant form.
+	 */
+	toDoubleConsonant,
+	/**
+	 * Converts all consonants into their final form.
+	 */
+	toFinal,
+	/**
 	 * Converts all consonants into their fortis (tensed) form.
 	 */
 	toFortis,
+	/**
+	 * Converts all consonants into their initial form.
+	 */
+	toInitial,
 	/**
 	 * Converts all vowels that can be iotized within the given string.
 	 */
@@ -139,4 +176,12 @@ export default {
 	 * Converts all consonants into their lenis (soft) form.
 	 */
 	toLenis,
+	/**
+	 * Converts all vowels into their medial form.
+	 */
+	toMedial,
+	/**
+	 * Converts all consonants into their single consonant form.
+	 */
+	toSingleConsonant,
 }
