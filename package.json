@@ -1,6 +1,6 @@
 {
 	"name": "hangul",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"description": "A library dedicated to working with the Korean alphabet, Hangul.",
 	"main": "index.js",
 	"type": "module",
