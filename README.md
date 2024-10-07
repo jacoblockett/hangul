@@ -9,10 +9,16 @@
 
 ## Installation
 
-> ⚠️ Until a proper NPM package name is selected, the only way to install this package is to clone the repo directly, or trust `npm` et. al. to install it.
+> ⚠️ Until a proper NPM package name is selected, the only way to install this package is to clone the repo directly, or trust `npm` et. al. to install it using the github repo link.
 
 ```bash
 git clone "https://github.com/jacoblockett/hangul"
+```
+
+or
+
+```bash
+npm install "https://github.com/jacoblockett/hangul"
 ```
 
 ## Usage
@@ -23,24 +29,39 @@ This package comes with many useful functions, and more to come!
 - [getFinal](#getfinal-)
 - [getInitial](#getinitial-)
 - [getMedial](#getmedial-)
-- [isCompatibilityLetter](#iscompatibilityletter-)
+- [isAspirated](#isaspirated-)
+- [isCompatibility](#iscompatibility-)
+- [isCompositeConsonant](#iscompositeconsonant-)
+- [isCompositeVowel](#iscompositevowel-)
 - [isConsonant](#isconsonant-)
 - [isConsonantCluster](#isconsonantcluster-)
 - [isDiphthong](#isdiphthong-)
 - [isDoubleConsonant](#isdoubleconsonant-)
 - [isFinal](#isfinal-)
+- [isFortis](#isfortis-)
 - [isHangul](#ishangul-)
 - [isInitial](#isinitial-)
 - [isIotizedVowel](#isiotizedvowel-)
+- [isLenis](#islenis-)
 - [isMedial](#ismedial-)
-- [isNonCompatibilityLetter](#isnoncompatibilityletter-)
+- [isNonCompatibility](#isnoncompatibility-)
 - [isSyllable](#issyllable-)
 - [isVowel](#isvowel-)
 - [join](#join-)
 - [split](#split-)
 - [startsWith](#startswith-)
+- [toAspirated](#toaspirated-)
+- [toCompatibility](#tocompatibility-)
+- [toDoubleConsonant](#todoubleconsonant-)
+- [toFinal](#tofinal-)
+- [toFortis](#tofortis-)
+- [toInitial](#toinitial-)
 - [toIotized](#toiotized-)
+- [toLenis](#tolenis-)
+- [toMedial](#tomedial-)
+- [toSingleConsonant](#tosingleconsonant-)
 
+---
 ### endsWith [🔝](#usage)
 
 Checks if the given search string exists at the end of the given operation string.
@@ -69,6 +90,7 @@ endsWith("늙다", "ㄱ다") // true
 endsWith("늙다", "ㄱ다", { decouple: false }) // false
 ```
 
+---
 ### getFinal [🔝](#usage)
 
 Extracts the final letter from the given Hangul syllable block.
@@ -95,6 +117,7 @@ getFinal("한", { compatibility: false }) // "ᆫ"
 getFinal("하") // ""
 ```
 
+---
 ### getInitial [🔝](#usage)
 
 Extracts the initial letter from the given Hangul syllable block.
@@ -120,6 +143,7 @@ getInitial("한") // "ㅎ"
 getInitial("한", { compatibility: false }) // "ᄒ"
 ```
 
+---
 ### getMedial [🔝](#usage)
 
 Extracts the medial letter from the given Hangul syllable block.
@@ -145,23 +169,43 @@ getMedial("한") // "ㅏ"
 getMedial("한", { compatibility: false }) // "ᅡ"
 ```
 
-### isCompatibilityLetter [🔝](#usage)
+---
+### isAspirated [🔝](#usage)
+
+Checks if the given value is an aspirated consonant.
+
+#### Signature
+
+```typescript
+function isAspirated(value: unknown): boolean
+```
+
+#### Example
+
+```javascript
+isAspirated("ㅋ") // true
+isAspirated("ㄱ") // false
+```
+
+---
+### isCompatibility [🔝](#usage)
 
 Checks if the given value is a compatibility letter.
 
 #### Signature
 
 ```typescript
-function isCompatibilityLetter(value: unknown): boolean
+function isCompatibility(value: unknown): boolean
 ```
 
 #### Example
 
 ```javascript
-isCompatibilityLetter("ㄱ") // true
-isCompatibilityLetter("ᄀ") // false
+isCompatibility("ㄱ") // true
+isCompatibility("ᄀ") // false
 ```
 
+---
 ### isCompositeConsonant [🔝](#usage)
 
 ➡️ ***[isConsonantCluster](#isconsonantcluster-)***
@@ -181,6 +225,7 @@ isCompositeConsonant("ㄳ") // true
 isCompositeConsonant("ㄱ") // false
 ```
 
+---
 ### isCompositeVowel [🔝](#usage)
 
 ➡️ ***[isDiphthong](#isdiphthong-)***
@@ -200,6 +245,7 @@ isCompositeVowel("ㅘ") // true
 isCompositeVowel("ㅏ") // false
 ```
 
+---
 ### isConsonant [🔝](#usage)
 
 Checks if the given value is consonant.
@@ -217,6 +263,7 @@ isConsonant("ㄱ") // true
 isConsonant("ㅏ") // false
 ```
 
+---
 ### isConsonantCluster [🔝](#usage)
 
 ➡️ ***[isCompositeConsonant](#iscompositeconsonant-)***
@@ -236,6 +283,7 @@ isConsonantCluster("ㄳ") // true
 isConsonantCluster("ㄱ") // false
 ```
 
+---
 ### isDiphthong [🔝](#usage)
 
 ➡️ ***[isCompositeVowel](#iscompositevowel-)***
@@ -255,6 +303,7 @@ isDiphthong("ㅘ") // true
 isDiphthong("ㅏ") // false
 ```
 
+---
 ### isDoubleConsonant [🔝](#usage)
 
 Checks if the given value is a double consonant, a cluster of two identical consonants as one letter.
@@ -272,6 +321,7 @@ isDoubleConsonant("ㄲ") // true
 isDoubleConsonant("ㄳ") // false
 ```
 
+---
 ### isFinal [🔝](#usage)
 
 Checks if the given value is a non-compatibility, final consonant.
@@ -289,6 +339,25 @@ isFinal("ᆨ") // true
 isFinal("ㄱ") // false
 ```
 
+---
+### isFortis [🔝](#usage)
+
+Checks if the given value is a fortis (tensed) consonant.
+
+#### Signature
+
+```typescript
+function isFortis(value: unknown): boolean
+```
+
+#### Example
+
+```javascript
+isFortis("ㄲ") // true
+isFortis("ㄱ") // false
+```
+
+---
 ### isHangul [🔝](#usage)
 
 Checks if the given value is some sort of Hangul characters, either a loose letter or a syllable block. By default, symbols and numbers are allowed to pass. Use the `options.strict` boolean to disallow this behavior.
@@ -314,6 +383,7 @@ isHangul("안녕하세요!") // true
 isHangul("안녕하세요!", { strict: true }) // false
 ```
 
+---
 ### isInitial [🔝](#usage)
 
 Checks if the given value is a non-compatibility, initial consonant.
@@ -331,6 +401,7 @@ isInitial("ᄀ") // true
 isInitial("ㄱ") // false
 ```
 
+---
 ### isIotizedVowel [🔝](#usage)
 
 Checks if the given value is an iotized vowel, one that begins with the /j/ phoneme.
@@ -348,6 +419,25 @@ isIotizedVowel("ㅑ") // true
 isIotizedVowel("ㅏ") // false
 ```
 
+---
+### isLenis [🔝](#usage)
+
+Checks if the given value is a lenis (soft) consonant.
+
+#### Signature
+
+```typescript
+function isLenis(value: unknown): boolean
+```
+
+#### Example
+
+```javascript
+isLenis("ㄱ") // true
+isLenis("ㄲ") // false
+```
+
+---
 ### isMedial [🔝](#usage)
 
 Checks if the given value is a non-compatibility, medial vowel.
@@ -365,23 +455,25 @@ isMedial("ᅡ") // true
 isMedial("ㅏ") // false
 ```
 
-### isNonCompatibilityLetter [🔝](#usage)
+---
+### isNonCompatibility [🔝](#usage)
 
 Checks if the given value is a non-compatibility letter.
 
 #### Signature
 
 ```typescript
-function isNonCompatibilityLetter(value: unknown): boolean
+function isNonCompatibility(value: unknown): boolean
 ```
 
 #### Example
 
 ```javascript
-isNonCompatibilityLetter("ᅡ") // true
-isNonCompatibilityLetter("ㅏ") // false
+isNonCompatibility("ᅡ") // true
+isNonCompatibility("ㅏ") // false
 ```
 
+---
 ### isSyllable [🔝](#usage)
 
 Checks if the given value is a Hangul syllable block.
@@ -399,6 +491,7 @@ isSyllable("한") // true
 isSyllable("ㅎ") // false
 ```
 
+---
 ### isVowel [🔝](#usage)
 
 Checks if the given value is a vowel.
@@ -416,6 +509,7 @@ isVowel("ㅏ") // true
 isVowel("ㄱ") // false
 ```
 
+---
 ### join [🔝](#usage)
 
 Joins the given string in a way that would resemble dubeolsik (두벌식) typing. Converts all non-compatibility letters to compatibility letters during this process.
@@ -444,6 +538,7 @@ join("ㄱ가") // 까
 join("ㄱ가", { split: false }) // ㄱ가
 ```
 
+---
 ### split [🔝](#usage)
 
 Splits the given string, deconstructing all of the hangul syllables into their constituent letters.
@@ -474,6 +569,7 @@ split("했다") // ["ㅎ", "ㅐ", "ㅆ", "ㄷ", "ㅏ"]
 split("했다", { decouple: true, compatibility: false }) // ["ᄒ", "ᅢ", "ᆺ", "ᆺ", "ᄃ", "ᅡ"]
 ```
 
+---
 ### startsWith [🔝](#usage)
 
 Checks if the given search string exists at the beginning of the given operation string.
@@ -502,6 +598,118 @@ startsWith("늙다", "늘") // true
 startsWith("늙다", "늘", { decouple: false }) // false
 ```
 
+---
+### toAspirated [🔝](#usage)
+
+Converts all consonants into their aspirated form.
+
+#### Signature
+
+```typescript
+function toAspirated(str: string): string
+```
+
+#### Example
+
+```javascript
+toAspirated("ㄱ") // "ㅋ"
+toAspirated("ㄲ") // "ㅋ"
+toAspirated("한국") // "한쿸"
+```
+
+---
+### toCompatibility [🔝](#usage)
+
+Converts all letters into their compatibility form.
+
+#### Signature
+
+```typescript
+function toCompatibility(str: string): string
+```
+
+#### Example
+
+```javascript
+toCompatibility("ᆨ") // "ㄱ"
+toCompatibility("ᆩ") // "ㄲ"
+```
+
+---
+### toDoubleConsonant [🔝](#usage)
+
+Converts all consonants into their double consonant form.
+
+#### Signature
+
+```typescript
+function toDoubleConsonant(str: string): string
+```
+
+#### Example
+
+```javascript
+toDoubleConsonant("ㄱ") // "ㄱ"
+toDoubleConsonant("ㄲ") // "ㄱ"
+toDoubleConsonant("가") // "까"
+```
+
+---
+### toFinal [🔝](#usage)
+
+Converts all consonants into their final form.
+
+#### Signature
+
+```typescript
+function toFinal(str: string): string
+```
+
+#### Example
+
+```javascript
+toFinal("ㄱ") // "ᆨ"
+toFinal("ㄲ") // "ᆩ"
+```
+
+---
+### toFortis [🔝](#usage)
+
+Converts all consonants into their fortis (tensed) form.
+
+#### Signature
+
+```typescript
+function toFortis(str: string): string
+```
+
+#### Example
+
+```javascript
+toFortis("ㄱ") // "ㄲ"
+toFortis("ㄲ") // "ㄲ"
+toFortis("한국") // "한꾺"
+```
+
+---
+### toInitial [🔝](#usage)
+
+Converts all consonants into their initial form.
+
+#### Signature
+
+```typescript
+function toInitial(str: string): string
+```
+
+#### Example
+
+```javascript
+toInitial("ㄱ") // "ᄀ"
+toInitial("ㄲ") // "ᄁ"
+```
+
+---
 ### toIotized [🔝](#usage)
 
 Converts all vowels that can be iotized within the given string.
@@ -517,6 +725,62 @@ function toIotized(str: string): string
 ```javascript
 toIotized("ㅏ") // "ㅑ"
 toIotized("한국") // "햔귝"
+```
+---
+---
+### toLenis [🔝](#usage)
+
+Converts all consonants into their lenis (soft) form.
+
+#### Signature
+
+```typescript
+function toLenis(str: string): string
+```
+
+#### Example
+
+```javascript
+toLenis("ㄱ") // "ㅋ"
+toLenis("ㄲ") // "ㅋ"
+toLenis("한국") // "한쿸"
+```
+
+---
+### toMedial [🔝](#usage)
+
+Converts all vowels into their medial form.
+
+#### Signature
+
+```typescript
+function toMedial(str: string): string
+```
+
+#### Example
+
+```javascript
+toMedial("ㅏ") // "ᅡ"
+toMedial("ㅔ") // "ᅦ"
+```
+
+---
+### toSingleConsonant [🔝](#usage)
+
+Converts all consonants into their single consonant form.
+
+#### Signature
+
+```typescript
+function toSingleConsonant(str: string): string
+```
+
+#### Example
+
+```javascript
+toSingleConsonant("ㄱ") // "ㄱ"
+toSingleConsonant("ㄲ") // "ㄱ"
+toSingleConsonant("까") // "가"
 ```
 
 ---
