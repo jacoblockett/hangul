@@ -2,30 +2,30 @@ import test from "node:test"
 import assert from "node:assert"
 import toIotized from "../lib/toIotized.js"
 
-test(`toIotized(123) | expects: TypeError | input string is not a string`, () => {
+test(`toIotized(123) | input string is not a string`, () => {
 	assert.throws(() => toIotized(123), TypeError)
 })
 
-test(`toIotized("") | expects: "" | empty string`, () => {
+test(`toIotized("") | empty string`, () => {
 	assert.deepStrictEqual(toIotized(""), "")
 })
 
-test(`toIotized("ㅏ") | expects: "ㅑ" | single letter`, () => {
+test(`toIotized("ㅏ") | single letter`, () => {
 	assert.deepStrictEqual(toIotized("ㅏ"), "ㅑ")
 })
 
-test(`toIotized("한국") | expects: "햔귝" | block`, () => {
+test(`toIotized("한국") | block`, () => {
 	assert.deepStrictEqual(toIotized("한국"), "햔귝")
 })
 
-test(`toIotized("ㄱ") | expects: "ㄱ" | redundant single letter`, () => {
+test(`toIotized("ㄱ") | redundant single letter`, () => {
 	assert.deepStrictEqual(toIotized("ㄱ"), "ㄱ")
 })
 
-test(`toIotized("ㅏㄱㅑ") | expects: "ㅑㄱㅑ" | loose letters`, () => {
+test(`toIotized("ㅏㄱㅑ") | loose letters`, () => {
 	assert.deepStrictEqual(toIotized("ㅏㄱㅑ"), "ㅑㄱㅑ")
 })
 
-test(`toIotized("a") | expects: "a" | non-hangul`, () => {
+test(`toIotized("a") | non-hangul`, () => {
 	assert.deepStrictEqual(toIotized("a"), "a")
 })
