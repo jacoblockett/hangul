@@ -41,7 +41,7 @@ This package comes with many useful functions, and more to come!
 - [isFortis](#isfortis-)
 - [isHangul](#ishangul-)
 - [isInitial](#isinitial-)
-- [isIotizedVowel](#isiotizedvowel-)
+- [isIotized](#isiotized-)
 - [isLenis](#islenis-)
 - [isMedial](#ismedial-)
 - [isNonCompatibility](#isnoncompatibility-)
@@ -402,21 +402,21 @@ isInitial("ㄱ") // false
 ```
 
 ---
-### isIotizedVowel [🔝](#usage)
+### isIotized [🔝](#usage)
 
 Checks if the given value is an iotized vowel, one that begins with the /j/ phoneme.
 
 #### Signature
 
 ```typescript
-function isIotizedVowel(value: unknown): boolean
+function isIotized(value: unknown): boolean
 ```
 
 #### Example
 
 ```javascript
-isIotizedVowel("ㅑ") // true
-isIotizedVowel("ㅏ") // false
+isIotized("ㅑ") // true
+isIotized("ㅏ") // false
 ```
 
 ---
